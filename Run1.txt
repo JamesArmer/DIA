@@ -1,0 +1,17 @@
+"C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\jbr\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\lib\idea_rt.jar=53265:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\44785\Documents\DIA\G53DIA-src\bin uk.ac.nott.cs.g53dia.simulator.Evaluator
+Run: 0score: 4.427E04
+Run: 1score: 4.273E04
+Run: 2score: 3.949E04
+Run: 3score: 4.654E04
+Run: 4score: 4.010E04
+Run: 5score: 3.970E04
+Run: 6score: 4.261E04
+Run: 7score: 4.327E04
+Run: 8score: 4.176E04
+Run: 9score: 4.460E04
+
+Total average score: 4.251E04
+
+Process finished with exit code 0
+
+Greedy reactive architecture where once 1 litter pickup is made it immediately drops off

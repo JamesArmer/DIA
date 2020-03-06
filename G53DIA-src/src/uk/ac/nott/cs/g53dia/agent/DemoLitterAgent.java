@@ -16,9 +16,11 @@ import java.util.Random;
  * this file, and for a DISCLAIMER OF ALL WARRANTIES.
  */
 public class DemoLitterAgent extends LitterAgent {
-	Point currentTarget = null;
+	Point largePoint = new Point(10000, 10000);
+	Point currentTarget = largePoint;
 	Point nearestRecharge = new Point(0,0);
-	Point nearestWasteStation = new Point(10000, 10000);
+	Point nearestWasteStation = largePoint;
+	Point nearestRecyclingStation = largePoint;
 
 	public DemoLitterAgent() {
 		this(new Random());
@@ -43,17 +45,28 @@ public class DemoLitterAgent extends LitterAgent {
 	public Action senseAndAct(Cell[][] view, long timestep) {
 
 		if((getCurrentCell(view) instanceof RechargePoint) && (getChargeLevel() < MAX_CHARGE)){
+			localScan(view);
 			return new RechargeAction(); //if on a recharge point then recharge if possible
-		}else if((getCurrentCell(view) instanceof WasteStation) && (getWasteLevel() > 0)){
-			return new DisposeAction();	//dispose of waste
-		}else if((getCurrentCell(view) instanceof WasteBin)){ //load waste from bin
+		}else if((getCurrentCell(view) instanceof WasteStation) && (getWasteLevel() > 0)) {
+			return new DisposeAction();  //dispose of waste if possible
+		} else if((getCurrentCell(view) instanceof RecyclingStation) && (getRecyclingLevel() > 0)){
+			return new DisposeAction(); //dispose of recycling if possible
+		}else if((getCurrentCell(view) instanceof WasteBin) && (getRecyclingLevel() == 0)) {
+			localScan(view);
 			return loadWaste(view); //load waste if possible
+		} else if((getCurrentCell(view) instanceof RecyclingBin) && (getWasteLevel() == 0)){
+			localScan(view);
+			return loadRecycling(view); //load recycling if possible
 		}else if ((getChargeLevel() <= MAX_CHARGE / 2) && !(getCurrentCell(view) instanceof RechargePoint)) {
 			return new MoveTowardsAction(nearestRecharge); //move to the nearest recharge station
-		}else if(getWasteLevel() > 0){ //find waste station
+		}else if(getWasteLevel() > 0) { //find waste station
+			localScan(view);
 			return new MoveTowardsAction(nearestWasteStation);
-		}else { //find waste bin
-			if(currentTarget == null){
+		} else if(getRecyclingLevel() > 0){ //find recycling station
+			localScan(view);
+			return new MoveTowardsAction(nearestRecyclingStation);
+		}else { //find waste or recycling bin with task
+			if(currentTarget == largePoint){
 				localScan(view);
 				return new MoveAction(1);
 			}
@@ -62,8 +75,8 @@ public class DemoLitterAgent extends LitterAgent {
 	}
 
 	public void localScan(Cell[][] view){
-		for(int i=0;i<VIEW_RANGE;i++) {
-			for (int j = 0; j < VIEW_RANGE; j++) {
+		for(int i=0;i<(VIEW_RANGE*2);i++) {
+			for (int j=0;j<(VIEW_RANGE*2);j++) {
 				if (view[i][j] instanceof RechargePoint) { //check for recharge
 					RechargePoint rp = (RechargePoint) view[i][j];
 					if (newPointCloser(nearestRecharge, rp.getPoint())) {
@@ -76,13 +89,29 @@ public class DemoLitterAgent extends LitterAgent {
 						nearestWasteStation = ws.getPoint();
 					}
 				}
-				if(view[i][j] instanceof WasteBin){
-					if (view[i][j] instanceof WasteBin){
-						WasteBin wb = (WasteBin) view[i][j];
-						WasteTask wt = wb.getTask();
-						if(wt != null) {
-							Point newPos = wb.getPoint();
-							currentTarget = newPos;
+				if(view[i][j] instanceof  RecyclingStation){ //check for recycling station
+					RecyclingStation rs = (RecyclingStation) view[i][j];
+					if(newPointCloser(nearestRecyclingStation, rs.getPoint())){
+						nearestRecyclingStation = rs.getPoint();
+					}
+				}
+				if(view[i][j] instanceof WasteBin){ //check for waste bin
+					WasteBin wb = (WasteBin) view[i][j];
+					WasteTask wt = wb.getTask();
+					if(wt != null) {
+						Point wPos = wb.getPoint();
+						if(newPointCloser(currentTarget, wPos)){
+							currentTarget = wPos;
+						}
+					}
+				}
+				if(view[i][j] instanceof RecyclingBin){ //check for recycling bin
+					RecyclingBin rb = (RecyclingBin) view[i][j];
+					RecyclingTask rt = rb.getTask();
+					if(rt != null){
+						Point rPos = rb.getPoint();
+						if(newPointCloser(currentTarget, rPos)){
+							currentTarget = rPos;
 						}
 					}
 				}
@@ -102,10 +131,20 @@ public class DemoLitterAgent extends LitterAgent {
 		WasteBin wb = (WasteBin) getCurrentCell(view);
 		WasteTask wt = wb.getTask();
 		if((wt != null) && (getWasteCapacity() >= wt.getRemaining())){
-			currentTarget = null;
+			currentTarget = largePoint;
 			return new LoadAction(wt);
 		}
-		return new MoveAction(1);
+		return new MoveAction(this.r.nextInt(8));
+	}
+
+	public Action loadRecycling(Cell[][] view){
+		RecyclingBin rb = (RecyclingBin) getCurrentCell(view);
+		RecyclingTask rt = rb.getTask();
+		if((rt != null) && (getRecyclingCapacity() >= rt.getRemaining())){
+			currentTarget = largePoint;
+			return new LoadAction(rt);
+		}
+		return new MoveAction(this.r.nextInt(8));
 	}
 
 }
