@@ -1,0 +1,20 @@
+"C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\jbr\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\lib\idea_rt.jar=57494:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\44785\Documents\DIA\G53DIA-src\bin uk.ac.nott.cs.g53dia.simulator.Evaluator
+Run: 0score: 2.272E04
+Run: 1score: 2.560E04
+Run: 2score: 2.345E04
+Run: 3score: 2.777E04
+Run: 4score: 2.692E04
+Run: 5score: 2.639E04
+Run: 6score: 2.684E04
+Run: 7score: 2.534E04
+Run: 8score: 2.060E04
+Run: 9score: 2.698E04
+
+Total average score: 2.526E04
+
+Process finished with exit code 0
+
+Greedy reactive architecture with agent needing to be full before dropping off litter
+
+Nearest distance to recycling station = 7
+Charge before recharge = MAX_CHARGE / 3
