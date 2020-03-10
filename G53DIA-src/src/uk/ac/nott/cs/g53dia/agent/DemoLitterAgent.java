@@ -56,11 +56,11 @@ public class DemoLitterAgent extends LitterAgent {
 		}
 
 		if((getCurrentCell(view) instanceof RechargePoint) && (getChargeLevel() < MAX_CHARGE)){
-			localScan(view);
 			return new RechargeAction(); //if on a recharge point then recharge if possible
 		}else if((getCurrentCell(view) instanceof WasteStation) && (getWasteLevel() > 0)) {
 			return new DisposeAction();  //dispose of waste if possible
 		} else if((getCurrentCell(view) instanceof RecyclingStation) && (getRecyclingLevel() > 0)){
+			localScan(view);
 			return new DisposeAction(); //dispose of recycling if possible
 		}else if((getCurrentCell(view) instanceof WasteBin) && (getRecyclingLevel() == 0)) {
 			localScan(view);
@@ -71,11 +71,11 @@ public class DemoLitterAgent extends LitterAgent {
 		}else if ((getChargeLevel() <= MAX_CHARGE / 3) || ((this.getPosition().distanceTo(nearestRecharge) < VIEW_RANGE / 6) &&
 				(getChargeLevel() <= MAX_CHARGE / 1.5)) && !(getCurrentCell(view) instanceof RechargePoint)) {
 			return new MoveTowardsAction(nearestRecharge); //move to the nearest recharge station
-		}else if((getWasteLevel() == MAX_LITTER) || ((getWasteLevel() > 0)
+		}else if((getWasteLevel() >= MAX_LITTER*0.9) || ((getWasteLevel() > 0)
 				&& (this.getPosition().distanceTo(nearestWasteStation) < VIEW_RANGE / 5))) { //go to waste station
 			localScan(view);
 			return new MoveTowardsAction(nearestWasteStation);
-		} else if((getRecyclingLevel() == MAX_LITTER) || ((getRecyclingLevel() > 0)
+		} else if((getRecyclingLevel() >= MAX_LITTER*0.9) || ((getRecyclingLevel() > 0)
 				&& (this.getPosition().distanceTo(nearestRecyclingStation) < VIEW_RANGE / 5))){ //go to recycling station
 			localScan(view);
 			return new MoveTowardsAction(nearestRecyclingStation);
@@ -149,7 +149,7 @@ public class DemoLitterAgent extends LitterAgent {
 			currentTarget = largePoint;
 			return new LoadAction(wt);
 		}
-		return new MoveAction(this.r.nextInt(8));
+		return new MoveAction(r.nextInt(7));
 	}
 
 	public Action loadRecycling(Cell[][] view){
@@ -159,7 +159,7 @@ public class DemoLitterAgent extends LitterAgent {
 			currentTarget = largePoint;
 			return new LoadAction(rt);
 		}
-		return new MoveAction(this.r.nextInt(8));
+		return new MoveAction(r.nextInt(7));
 	}
 
 	public Action randomWalk(){

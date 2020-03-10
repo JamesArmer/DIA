@@ -1,0 +1,20 @@
+"C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\jbr\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\lib\idea_rt.jar=63980:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\44785\Documents\DIA\G53DIA-src\bin uk.ac.nott.cs.g53dia.simulator.Evaluator
+Run: 0score: 2.759E04
+Run: 1score: 2.783E04
+Run: 2score: 2.820E04
+Run: 3score: 3.147E04
+Run: 4score: 2.945E04
+Run: 5score: 2.498E04
+Run: 6score: 2.906E04
+Run: 7score: 2.593E04
+Run: 8score: 2.683E04
+Run: 9score: 2.685E04
+
+Total average score: 2.782E04
+
+Process finished with exit code 0
+
+Hybrid architecture with bin packing (up to 0.9*MAX_LITTER), random walk (between 5 and 25) and not selecting bins < 20
+
+nearestSation < VIEW_RANGE / 5 and nearest recharge < VIEW_RANGE / 6
+MAX_CHARGE / 3
