@@ -2,6 +2,7 @@ package uk.ac.nott.cs.g53dia.agent;
 
 import uk.ac.nott.cs.g53dia.library.*;
 import java.util.Random;
+import java.util.Vector;
 
 
 /**
@@ -21,6 +22,10 @@ public class DemoLitterAgent extends LitterAgent {
 	Point nearestRecharge = new Point(0,0);
 	Point nearestWasteStation = largePoint;
 	Point nearestRecyclingStation = largePoint;
+
+	Boolean walk = false;
+	int randomDirection;
+	int walkCounter = 0;
 
 	public DemoLitterAgent() {
 		this(new Random());
@@ -43,6 +48,12 @@ public class DemoLitterAgent extends LitterAgent {
 	 * charge agt is half full, at which point it returns to a charge pump.
 	 */
 	public Action senseAndAct(Cell[][] view, long timestep) {
+		if((walk) && (walkCounter > 0)){
+			return randomWalk();
+		}
+		if(walkCounter == 0){
+			resetWalk();
+		}
 
 		if((getCurrentCell(view) instanceof RechargePoint) && (getChargeLevel() < MAX_CHARGE)){
 			localScan(view);
@@ -57,20 +68,22 @@ public class DemoLitterAgent extends LitterAgent {
 		} else if((getCurrentCell(view) instanceof RecyclingBin) && (getWasteLevel() == 0)){
 			localScan(view);
 			return loadRecycling(view); //load recycling if possible
-		}else if ((getChargeLevel() <= MAX_CHARGE / 3) && !(getCurrentCell(view) instanceof RechargePoint)) {
+		}else if ((getChargeLevel() <= MAX_CHARGE / 3) || ((this.getPosition().distanceTo(nearestRecharge) < VIEW_RANGE / 6) &&
+				(getChargeLevel() <= MAX_CHARGE / 1.5)) && !(getCurrentCell(view) instanceof RechargePoint)) {
 			return new MoveTowardsAction(nearestRecharge); //move to the nearest recharge station
 		}else if((getWasteLevel() == MAX_LITTER) || ((getWasteLevel() > 0)
-				&& (this.getPosition().distanceTo(nearestWasteStation) < 7))) { //go to waste station
+				&& (this.getPosition().distanceTo(nearestWasteStation) < VIEW_RANGE / 5))) { //go to waste station
 			localScan(view);
 			return new MoveTowardsAction(nearestWasteStation);
 		} else if((getRecyclingLevel() == MAX_LITTER) || ((getRecyclingLevel() > 0)
-				&& (this.getPosition().distanceTo(nearestRecyclingStation) < 7))){ //go to recycling station
+				&& (this.getPosition().distanceTo(nearestRecyclingStation) < VIEW_RANGE / 5))){ //go to recycling station
 			localScan(view);
 			return new MoveTowardsAction(nearestRecyclingStation);
 		}else { //find waste or recycling bin with task
 			if(currentTarget == largePoint){
 				localScan(view);
-				return new MoveAction(1);
+				walk = true;
+				return randomWalk();
 			}
 			return new MoveTowardsAction(currentTarget);
 		}
@@ -100,7 +113,7 @@ public class DemoLitterAgent extends LitterAgent {
 				if(view[i][j] instanceof WasteBin){ //check for waste bin
 					WasteBin wb = (WasteBin) view[i][j];
 					WasteTask wt = wb.getTask();
-					if(wt != null) {
+					if((wt != null) && (wt.getRemaining() > wt.MAX_AMOUNT / 5)) {
 						Point wPos = wb.getPoint();
 						if(newPointCloser(currentTarget, wPos) && (getRecyclingLevel() == 0)){
 							currentTarget = wPos;
@@ -110,7 +123,7 @@ public class DemoLitterAgent extends LitterAgent {
 				if(view[i][j] instanceof RecyclingBin){ //check for recycling bin
 					RecyclingBin rb = (RecyclingBin) view[i][j];
 					RecyclingTask rt = rb.getTask();
-					if(rt != null){
+					if((rt != null) && (rt.getRemaining() > rt.MAX_AMOUNT / 5)){
 						Point rPos = rb.getPoint();
 						if(newPointCloser(currentTarget, rPos) && (getWasteLevel() == 0)){
 							currentTarget = rPos;
@@ -147,6 +160,17 @@ public class DemoLitterAgent extends LitterAgent {
 			return new LoadAction(rt);
 		}
 		return new MoveAction(this.r.nextInt(8));
+	}
+
+	public Action randomWalk(){
+		walkCounter--;
+		return new MoveAction(randomDirection);
+	}
+
+	public void resetWalk(){
+		walk = false;
+		randomDirection = this.r.nextInt(8);
+		walkCounter = this.r.nextInt(5)+20;
 	}
 
 }
