@@ -8,7 +8,7 @@ import java.util.Random;
  * An example of how to simulate execution of a litter agent in the sample
  * (task) environment.
  * <p>
- * Creates a default {@link Environment}, a {@link DemoLitterAgent} and a GUI window
+ * Creates a default {@link Environment}, a {@link MyLitterAgent} and a GUI window
  * (a {@link LitterAgentViewer}) and executes the LitterAgent for DURATION days in the
  * environment.
  * 
@@ -42,7 +42,7 @@ public class Simulator {
 		// Create an environment
 		Environment env = new Environment(LitterAgent.MAX_CHARGE/2, r);
 		// Create an agent
-		LitterAgent agt = new DemoLitterAgent(r);
+		LitterAgent agt = new MyLitterAgent(r);
 		// Create a GUI window to show the agent
 		LitterAgentViewer tv = new LitterAgentViewer(agt);
 		tv.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);

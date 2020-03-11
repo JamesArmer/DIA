@@ -26,7 +26,7 @@ public class Evaluator {
 	    // Create an environment
 	    Environment env = new Environment(LitterAgent.MAX_CHARGE/2, r);
 		// Create an agent
-		LitterAgent agt = new DemoLitterAgent(r);
+		LitterAgent agt = new MyLitterAgent(r);
 		// Start executing the agent
 		run:
 		while (env.getTimestep() < DURATION) {
