@@ -16,9 +16,11 @@ import java.util.Random;
  * this file, and for a DISCLAIMER OF ALL WARRANTIES.
  */
 public class MyLitterAgent extends LitterAgent {
+	//used when the agent needs to find a new target as the new target will always be closer than this point
 	Point largePoint = new Point(10000, 10000);
-	Point currentTarget = largePoint;
+
 	Point nearestRecharge = new Point(0,0);
+	Point currentTarget = largePoint;
 	Point nearestWasteStation = largePoint;
 	Point nearestRecyclingStation = largePoint;
 
